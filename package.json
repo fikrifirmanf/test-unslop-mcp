@@ -1,0 +1,53 @@
+{
+  "name": "test-unslop-mcp",
+  "version": "1.0.0",
+  "description": "MCP server + agent skill that catches fake and fragile AI-written tests (no assertions, tautologies, swallowed failures, .only, sleeps, snapshot-only, mock-heavy), runs the real test runner and flags zero-test runs. JS/TS, Python, Go, Swift, Kotlin/Java. Works with Claude Code, Claude Desktop, Codex and Antigravity.",
+  "type": "module",
+  "bin": {
+    "test-unslop-mcp": "src/server.mjs"
+  },
+  "files": [
+    "src",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "skill",
+    "anti-slop",
+    "testing",
+    "tests",
+    "unit-test",
+    "jest",
+    "vitest",
+    "pytest",
+    "go-test",
+    "xctest",
+    "junit",
+    "test-quality",
+    "claude",
+    "codex",
+    "antigravity"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "unslop-core": "^1.0.0"
+  },
+  "author": "Fikri Firman Fadilah",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fikrifirmanf/test-unslop-mcp.git"
+  },
+  "homepage": "https://github.com/fikrifirmanf/test-unslop-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/fikrifirmanf/test-unslop-mcp/issues"
+  }
+}
