@@ -1,6 +1,6 @@
 {
   "name": "test-unslop-mcp",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "MCP server + agent skill that catches fake and fragile AI-written tests (no assertions, tautologies, swallowed failures, .only, sleeps, snapshot-only, mock-heavy), runs the real test runner and flags zero-test runs. JS/TS, Python, Go, Swift, Kotlin/Java. Works with Claude Code, Claude Desktop, Codex and Antigravity.",
   "type": "module",
   "bin": {
