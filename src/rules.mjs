@@ -21,7 +21,9 @@ function testsWithoutAssertion(src, file) {
   const out = [];
   const flag = (index, body, re) => !re.test(body) && out.push({ index });
   if (JS.test(file)) {
-    for (const m of src.matchAll(/\b(?:it|test)(?:\.(?:concurrent|each\([^)]*\)))?\s*\(\s*(["'`])[^]*?\1\s*,/g)) {
+    // Focused tests (`it.only`, `test.concurrent.only`, `fit`) run too, so they must assert as well.
+    // `.skip` / `.todo` are left out: those bodies never run.
+    for (const m of src.matchAll(/\b(?:it|test|fit)(?:\.(?:only|concurrent|each\([^)]*\)))*\s*\(\s*(["'`])[^]*?\1\s*,/g)) {
       // Skip past the parameter list (which may destructure: `async ({ page }) =>`) to the body.
       const head = src.slice(m.index + m[0].length).match(/^[^]*?(?:=>\s*|\bfunction\b[^{]*)/);
       if (!head) continue;
@@ -95,7 +97,7 @@ export const rules = [
     check: testsWithoutAssertion,
     message: "Test never asserts anything: it passes as long as nothing throws. Assert on the result or side effect.",
     examples: [
-      { file: "a.test.ts", bad: ["it('renders', () => {\n  render(<Card />);\n});", "test('calls api', async () => {\n  await load();\n})"], good: ["it('renders title', () => {\n  render(<Card title=\"Hi\" />);\n  expect(screen.getByText('Hi')).toBeVisible();\n});", "it('adds', () => expect(add(1, 2)).toBe(3));"] },
+      { file: "a.test.ts", bad: ["it('renders', () => {\n  render(<Card />);\n});", "test('calls api', async () => {\n  await load();\n})", "it.only('renders', () => {\n  render(<Card />);\n});", "test.concurrent.only('loads', async () => {\n  await load();\n})", "fit('renders', () => {\n  render(<Card />);\n});"], good: ["it.only('adds', () => {\n  expect(add(1, 2)).toBe(3);\n});", "it.skip('later', () => {})", "it.todo('handles empty input')","it('renders title', () => {\n  render(<Card title=\"Hi\" />);\n  expect(screen.getByText('Hi')).toBeVisible();\n});", "it('adds', () => expect(add(1, 2)).toBe(3));"] },
       { file: "test_a.py", bad: ["def test_create():\n    client.post('/u', json={})\n"], good: ["def test_create():\n    r = client.post('/u', json={})\n    assert r.status_code == 422\n", "def test_raises():\n    with pytest.raises(ValueError):\n        parse('x')\n"] },
       { file: "tests/a.rs", bad: ["#[test]\nfn parses() {\n    parse(\"x\");\n}"], good: ["#[test]\nfn parses() {\n    assert_eq!(parse(\"x\"), 1);\n}", "#[tokio::test]\nasync fn runs() {\n    run().await.unwrap();\n}"] },
       { file: "a.spec.ts", bad: [], good: ["test('ui', async ({ page }) => {\n  await page.goto('/');\n  await expect(page.getByRole('heading')).toBeVisible();\n});"] },
